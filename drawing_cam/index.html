@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#bfe4fa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>GDG ENSAF — Drawing Cam</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- MediaPipe Hands & Camera Utils: Local vendor with CDN fallback -->
+  <script src="vendor/mediapipe/camera_utils.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js'"></script>
+  <script src="vendor/mediapipe/hands.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js'"></script>
+</head>
+<body>
+  <div id="app-container">
+    <!-- Google 4-Color Floating Ambient Bubbles Layer -->
+    <div class="gdg-ambient-wrap" aria-hidden="true">
+      <span class="ambient-bubble b-blue"></span>
+      <span class="ambient-bubble b-red"></span>
+      <span class="ambient-bubble b-yellow"></span>
+      <span class="ambient-bubble b-green"></span>
+    </div>
+
+    <!-- Hidden Video Feed (Rendered into Canvas) -->
+    <video id="webcam" playsinline autoplay muted></video>
+
+    <!-- Main Drawing & Camera Canvas -->
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- Top Status Bar -->
+    <header class="glass-bar top-bar">
+      <div class="brand">
+        <img src="logo.png" alt="GDG ENSAF Logo" class="gdg-header-logo">
+        <div class="brand-text">
+          <span class="brand-title">GDG ENSAF</span>
+          <span class="brand-sub">DRAWING CAM</span>
+        </div>
+      </div>
+      <div class="top-controls">
+        <button id="btnFlipCam" class="glass-btn icon-btn" title="Switch Front/Rear Camera" aria-label="Switch Camera">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.21.896 4.21 2.344 5.656L4 18h6v-6l-2.05 2.05C6.758 12.858 6 11.516 6 10c0-3.314 2.686-6 6-6s6 2.686 6 6c0 1.516-.758 2.858-1.95 4.05L14 12v6h6l-2.344-2.344C19.104 14.21 20 12.21 20 10z"/>
+          </svg>
+        </button>
+        <button id="btnSound" class="glass-btn icon-btn" title="Toggle Sound" aria-label="Toggle Sound">
+          <svg id="soundIconOn" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="soundIconOff" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          </svg>
+        </button>
+        <button id="btnHelp" class="glass-btn icon-btn" title="How to Play" aria-label="Help Guide">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Floating Drawing Toolbar -->
+    <div class="drawing-toolbar glass-panel">
+      <!-- Google 4-Color Palette -->
+      <div class="color-palette" role="radiogroup" aria-label="Select Drawing Color">
+        <button class="color-swatch c-blue active" data-color="#4285f4" title="Google Blue"></button>
+        <button class="color-swatch c-red" data-color="#ea4335" title="Google Red"></button>
+        <button class="color-swatch c-yellow" data-color="#fbbc05" title="Google Yellow"></button>
+        <button class="color-swatch c-green" data-color="#34a853" title="Google Green"></button>
+        <button class="color-swatch c-eraser" data-color="eraser" title="Eraser">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M20 20H7L3 16C2 15 2 13 3 12L13 2L22 11L18 15"/>
+            <line x1="7" y1="17" x2="17" y2="7"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="tool-divider"></div>
+
+      <!-- Action Tools -->
+      <div class="tool-actions">
+        <!-- Brush Size Selector -->
+        <button id="btnBrushSize" class="tool-btn" title="Brush Size: Medium">
+          <span class="brush-indicator" id="brushIndicator"></span>
+        </button>
+        <!-- Toggle GDG Logo Stencil Guide -->
+        <button id="btnTemplate" class="tool-btn active-tool" title="Toggle GDG Logo Guide Stencil">
+          <span class="stencil-icon">&lt; &gt;</span>
+        </button>
+        <!-- Undo -->
+        <button id="btnUndo" class="tool-btn" title="Undo Last Stroke">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+        </button>
+        <!-- Clear Canvas -->
+        <button id="btnClear" class="tool-btn" title="Clear Drawing">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Guidance Banner -->
+    <div id="instructionBanner" class="instruction-banner">
+      <div class="banner-icon" id="bannerIcon">👆🎨</div>
+      <div class="banner-text" id="bannerText">Draw the GDG logo with your finger on screen or in the air!</div>
+    </div>
+
+    <!-- Screen Flash Effect -->
+    <div id="screenFlash" class="screen-flash"></div>
+
+    <!-- Copy Toast / Notification -->
+    <div id="copyToast" class="copy-toast hidden">
+      <div class="toast-check">✓</div>
+      <div class="toast-msg"><strong>@gdg.ensaf</strong> copied to clipboard! Tag us in your Story 🏷️</div>
+    </div>
+
+    <!-- Bottom Controls Bar -->
+    <footer class="glass-bar bottom-bar">
+      <div class="action-group">
+        <button id="btnSnapPhoto" class="shutter-btn" title="Snap Photo with Drawing">
+          <div class="shutter-inner">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#ffffff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
+              <circle cx="12" cy="13" r="4"/>
+            </svg>
+          </div>
+        </button>
+      </div>
+    </footer>
+
+    <!-- Post-Capture Share Modal -->
+    <div id="shareModal" class="modal-backdrop hidden">
+      <div class="modal-card share-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <img src="logo.png" alt="GDG Logo" class="modal-logo">
+            <h2>Your GDG Drawing Photo!</h2>
+          </div>
+          <button id="btnCloseShare" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body share-body">
+          <div class="preview-container">
+            <img id="sharePreviewImg" alt="Drawn Photo Preview" class="share-preview-img">
+          </div>
+          <div class="insta-tag-box">
+            <span class="insta-tag-label">Official Tag:</span>
+            <code class="insta-tag-code">@gdg.ensaf</code>
+            <button id="btnCopyTag" class="glass-btn btn-sm">Copy Tag</button>
+          </div>
+        </div>
+        <div class="modal-footer share-footer">
+          <!-- Primary: Share to Instagram Story -->
+          <button id="btnShareInsta" class="insta-share-btn">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+            </svg>
+            Share to Instagram Story
+          </button>
+          <!-- Secondary Actions -->
+          <div class="share-btn-row">
+            <button id="btnDownloadPhoto" class="glass-btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              Save to Phone
+            </button>
+            <button id="btnDrawAgain" class="glass-btn btn-secondary">
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M23 4v6h-6"></path>
+                <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+              </svg>
+              Draw Again
+            </button>
+          </div>
+          <!-- Profile Link -->
+          <a href="https://www.instagram.com/gdg.ensaf/" target="_blank" rel="noopener noreferrer" class="insta-profile-link">
+            Open @gdg.ensaf Instagram Page &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="helpModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <img src="logo.png" alt="GDG Logo" class="modal-logo">
+            <h2>How to Play GDG Drawing Cam</h2>
+          </div>
+          <button id="btnCloseHelp" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="gesture-item">
+            <div class="gesture-icon-box">🎨</div>
+            <div class="gesture-info">
+              <h4>1. Choose Google Colors</h4>
+              <p>Pick Blue, Red, Yellow, or Green from the top bar to match the Google Developer Groups logo.</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">👆</div>
+            <div class="gesture-info">
+              <h4>2. Draw on Screen or in the Air</h4>
+              <p>Draw directly with your finger on your phone screen, or point your index finger in the camera to draw in the air!</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">&lt; &gt;</div>
+            <div class="gesture-info">
+              <h4>3. Trace the GDG Logo</h4>
+              <p>Tap the <strong>&lt; &gt;</strong> icon to toggle the faint logo stencil on/off to help you draw the brackets!</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">📸</div>
+            <div class="gesture-info">
+              <h4>4. Snap & Share to Instagram Story</h4>
+              <p>Tap the shutter button to take the photo with your drawing, then tap <strong>Share to Instagram Story</strong> and tag <strong>@gdg.ensaf</strong>!</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnGotIt" class="glass-btn highlight-btn btn-full">Got It! Let's Draw</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Initial Camera Start Permission Prompt -->
+    <div id="startScreen" class="start-screen">
+      <div class="start-card">
+        <div class="start-logo-wrap">
+          <img src="logo.png" alt="GDG ENSAF Logo" class="start-gdg-logo">
+        </div>
+        <h1>GDG ON CAMPUS</h1>
+        <h2>ENSA FEZ — DRAWING CAM</h2>
+        <p>Draw the Google Developer Groups logo with your finger, snap your selfie, and share it to your Instagram Story!</p>
+        <button id="btnStartCam" class="start-btn">TAP TO ACTIVATE CAMERA</button>
+        <span class="start-note">Camera stays strictly on your device. Powered by local PC hotspot.</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+

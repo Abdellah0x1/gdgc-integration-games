@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#bfe4fa">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>GDG ENSAF — PUZZLE-CAM</title>
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- MediaPipe Face Mesh, Hands & Camera Utils: Local vendor with CDN fallback -->
+  <script src="vendor/mediapipe/camera_utils.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js'"></script>
+  <script src="vendor/mediapipe/face_mesh.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh/face_mesh.js'"></script>
+  <script src="vendor/mediapipe/hands.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js'"></script>
+</head>
+<body>
+  <div id="app-container">
+    <!-- Google 4-Color Floating Ambient Bubbles Layer (Inspired by GDGC-WEBSITE) -->
+    <div class="gdg-ambient-wrap" aria-hidden="true">
+      <span class="ambient-bubble b-blue"></span>
+      <span class="ambient-bubble b-red"></span>
+      <span class="ambient-bubble b-yellow"></span>
+      <span class="ambient-bubble b-green"></span>
+    </div>
+
+    <!-- Background Video Feed (hidden, rendered into Canvas) -->
+    <video id="webcam" playsinline autoplay muted></video>
+
+    <!-- Main Rendering Canvas -->
+    <canvas id="mainCanvas"></canvas>
+
+    <!-- Top Status Bar -->
+    <header class="glass-bar top-bar">
+      <div class="brand">
+        <img src="logo.png" alt="GDG ENSAF Logo" class="gdg-header-logo">
+        <div class="brand-text">
+          <span class="brand-title">GDG ENSAF</span>
+          <span class="brand-sub">PUZZLE-CAM</span>
+        </div>
+        <span class="mode-tag" id="modeBadge">LIVE CAM</span>
+      </div>
+      <div class="top-controls">
+        <button id="btnFlipCam" class="glass-btn icon-btn" title="Switch Front/Rear Camera" aria-label="Switch Camera">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.21.896 4.21 2.344 5.656L4 18h6v-6l-2.05 2.05C6.758 12.858 6 11.516 6 10c0-3.314 2.686-6 6-6s6 2.686 6 6c0 1.516-.758 2.858-1.95 4.05L14 12v6h6l-2.344-2.344C19.104 14.21 20 12.21 20 10z"/>
+          </svg>
+        </button>
+        <button id="btnSound" class="glass-btn icon-btn" title="Toggle Sound" aria-label="Toggle Sound">
+          <svg id="soundIconOn" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+          </svg>
+          <svg id="soundIconOff" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none;">
+            <line x1="1" y1="1" x2="23" y2="23"></line>
+            <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+          </svg>
+        </button>
+        <button id="btnHelp" class="glass-btn icon-btn" title="How to Play" aria-label="Help Guide">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Context Guidance Banner -->
+    <div id="instructionBanner" class="instruction-banner">
+      <div class="banner-icon" id="bannerIcon">😌</div>
+      <div class="banner-text" id="bannerText">Close both eyes to begin 3s countdown!</div>
+    </div>
+
+    <!-- Countdown Display Overlay -->
+    <div id="countdownContainer" class="countdown-overlay hidden">
+      <div class="countdown-circle">
+        <svg viewBox="0 0 120 120" class="countdown-svg">
+          <circle cx="60" cy="60" r="54" class="countdown-bg"></circle>
+          <circle cx="60" cy="60" r="54" class="countdown-meter" id="countdownMeter"></circle>
+        </svg>
+        <span id="countdownNumber" class="countdown-number">3</span>
+      </div>
+      <span class="countdown-label">OPEN EYES & SMILE! 😊</span>
+    </div>
+
+    <!-- Screen Flash Effect for Camera Capture -->
+    <div id="screenFlash" class="screen-flash"></div>
+
+    <!-- Celebration Toast / Victory Notification -->
+    <div id="victoryToast" class="victory-toast hidden">
+      <div class="victory-icon">🎉</div>
+      <div class="victory-content">
+        <h3>PUZZLE SOLVED!</h3>
+        <p>Tap Save below or make a fist ✊ to save to your phone</p>
+      </div>
+    </div>
+
+    <!-- Save Success Toast -->
+    <div id="saveToast" class="save-toast hidden">
+      <div class="save-check">✓</div>
+      <div class="save-msg">Photo Saved to Mobile!</div>
+    </div>
+
+    <!-- Bottom Controls HUD -->
+    <footer class="glass-bar bottom-bar">
+      <!-- Camera State Controls -->
+      <div id="camControls" class="action-group">
+        <button id="btnManualSnap" class="shutter-btn" title="Snap Photo Now">
+          <div class="shutter-inner"></div>
+        </button>
+      </div>
+
+      <!-- Puzzle State Controls -->
+      <div id="puzzleControls" class="action-group hidden">
+        <button id="btnScatter" class="glass-btn text-btn" title="Shuffle Pieces">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+          Scatter
+        </button>
+        <button id="btnSave" class="glass-btn text-btn highlight-btn" title="Save Photo to Phone">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          Save Photo
+        </button>
+        <button id="btnResetCam" class="glass-btn text-btn" title="Take a new photo">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6"></path>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          Retake
+        </button>
+      </div>
+    </footer>
+
+    <!-- Gesture Guide Modal -->
+    <div id="helpModal" class="modal-backdrop hidden">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-wrap">
+            <img src="logo.png" alt="GDG Logo" class="modal-logo">
+            <h2>How to Play PUZZLE-CAM</h2>
+          </div>
+          <button id="btnCloseHelp" class="modal-close-btn">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="gesture-item">
+            <div class="gesture-icon-box">😌📸</div>
+            <div class="gesture-info">
+              <h4>1. Close Both Eyes (Capture Photo)</h4>
+              <p>Simply <strong>close both eyes</strong> in front of the camera. The 3-second countdown will start automatically. Open your eyes and smile!</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">🧩</div>
+            <div class="gesture-info">
+              <h4>2. 3x3 Photo Puzzle</h4>
+              <p>Your captured photo is stamped with the official <strong>GDG ENSAF</strong> logo, sliced into 9 puzzle pieces, and scattered across the screen.</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">👆🤏</div>
+            <div class="gesture-info">
+              <h4>3. Drag & Drop Pieces</h4>
+              <p>Use your <strong>finger to drag</strong> pieces directly on your phone screen, or <strong>pinch with one hand</strong> in the camera to move pieces into place!</p>
+            </div>
+          </div>
+          <div class="gesture-item">
+            <div class="gesture-icon-box">💾✊</div>
+            <div class="gesture-info">
+              <h4>4. Save to Your Mobile</h4>
+              <p>When all pieces are assembled, tap <strong>Save Photo</strong> (or hold a closed fist ✊) to save the branded photo directly into your phone gallery!</p>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="btnGotIt" class="glass-btn highlight-btn btn-full">Got It! Let's Play</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Initial Camera Start Permission Prompt overlay -->
+    <div id="startScreen" class="start-screen">
+      <div class="start-card">
+        <div class="start-logo-wrap">
+          <img src="logo.png" alt="GDG ENSAF Logo" class="start-gdg-logo">
+        </div>
+        <h1>GDG ON CAMPUS</h1>
+        <h2>ENSA FEZ — PUZZLE-CAM</h2>
+        <p>Interactive hand & face camera puzzle game. Close both eyes to snap, solve the puzzle, and save your photo!</p>
+        <button id="btnStartCam" class="start-btn">TAP TO ACTIVATE CAMERA</button>
+        <span class="start-note">Camera stays strictly on your device. Powered by local PC hotspot.</span>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

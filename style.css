@@ -1,14 +1,17 @@
-/* GDG on Campus ENSAF — Integration Games Hub Stylesheet */
+/* GDG on Campus ENSAF — Games Hub
+   Styled to match the official GDGC-WEBSITE (gdgensaf.web.app)
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
   --gdg-blue: #4285F4;
   --gdg-red: #EA4335;
   --gdg-yellow: #FBBC04;
   --gdg-green: #34A853;
-  --bg-dark: #0a0c10;
-  --card-bg: rgba(18, 22, 34, 0.75);
-  --card-border: rgba(255, 255, 255, 0.08);
-  --text-main: #f0f4f9;
-  --text-sub: #9aa0a6;
+  --text-dark: #000000;
+  --text-blue: #1a73e8;
+  --text-sub: #5f6368;
 }
 
 * {
@@ -19,286 +22,303 @@
 }
 
 body {
-  font-family: 'Google Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  background-color: var(--bg-dark);
-  color: var(--text-main);
   min-height: 100vh;
+  background: linear-gradient(180deg, #bfe4fa 0%, #e2f2fd 35%, #ffffff 100%);
+  font-family: 'Google Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #202124;
   display: flex;
   flex-direction: column;
+  align-items: center;
   position: relative;
   overflow-x: hidden;
 }
 
-/* Ambient Background Glows */
-.bg-glow {
+/* Background WebGL Shader Canvas */
+#shader-canvas {
   position: fixed;
-  border-radius: 50%;
-  filter: blur(120px);
-  opacity: 0.15;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
   z-index: 0;
-}
-.glow-blue { width: 380px; height: 380px; background: var(--gdg-blue); top: -80px; left: -80px; }
-.glow-red { width: 320px; height: 320px; background: var(--gdg-red); top: 10%; right: -60px; }
-.glow-yellow { width: 300px; height: 300px; background: var(--gdg-yellow); bottom: 20%; left: 10%; }
-.glow-green { width: 400px; height: 400px; background: var(--gdg-green); bottom: -100px; right: -50px; }
-
-/* Header */
-.header {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(10, 12, 16, 0.85);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--card-border);
-  padding: 16px 24px;
+  display: block;
 }
 
-.header-inner {
-  max-width: 1100px;
+/* Container */
+.page-container {
+  width: 100%;
+  max-width: 520px;
+  padding: 40px 18px 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 10;
+}
+
+/* Profile Header (Exact match to gdgensaf.web.app) */
+.profile-header {
+  text-align: center;
+  margin-bottom: 28px;
+  width: 100%;
+}
+
+.gdg-logo-wrap {
+  margin-bottom: 16px;
+  display: inline-block;
+}
+
+.gdg-logo {
+  width: 110px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.08));
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.gdg-logo:hover {
+  transform: scale(1.08);
+}
+
+.title {
+  font-size: 25px;
+  font-weight: 700;
+  color: #000000;
+  letter-spacing: -0.3px;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  font-size: 16.5px;
+  font-weight: 500;
+  color: #1a73e8;
+  margin-bottom: 10px;
+}
+
+.description {
+  font-size: 13.5px;
+  color: #5f6368;
+  line-height: 1.5;
+  max-width: 360px;
   margin: 0 auto;
+}
+
+.description strong {
+  color: #202124;
+}
+
+/* Games Section Header */
+.section-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(26, 115, 232, 0.12);
+  border: 1px solid rgba(26, 115, 232, 0.3);
+  color: #1a73e8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin: 18px auto 20px;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+}
+
+/* Games Cards List (Cards styled matching gdgensaf.web.app pill cards) */
+.games-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 34px;
+}
+
+.game-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+  padding: 20px 22px;
+  overflow: hidden;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.3s ease,
+              border-color 0.3s ease;
+  cursor: pointer;
+}
+
+.game-card:hover {
+  transform: translateY(-4px) scale(1.015);
+  border-color: rgba(255, 255, 255, 1);
+  box-shadow: 0 12px 30px rgba(66, 133, 244, 0.16),
+              0 4px 10px rgba(0, 0, 0, 0.04);
+}
+
+.game-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
+.card-icon {
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.game-card:hover .card-icon {
+  transform: scale(1.15) rotate(4deg);
+}
+
+.icon-blue { background: rgba(66, 133, 244, 0.12); }
+.icon-red { background: rgba(234, 67, 53, 0.12); }
+.icon-green { background: rgba(52, 168, 83, 0.12); }
+
+.card-header-text {
+  flex: 1;
+}
+
+.card-title {
+  font-size: 17.5px;
+  font-weight: 700;
+  color: #1f1f1f;
+  letter-spacing: -0.2px;
+  margin-bottom: 2px;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sub-blue { color: #1a73e8; }
+.sub-red { color: #d93025; }
+.sub-green { color: #188038; }
+
+.card-desc {
+  font-size: 13.5px;
+  color: #5f6368;
+  line-height: 1.45;
+  margin-bottom: 14px;
+}
+
+.card-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.brand-logo {
-  height: 42px;
-  width: auto;
-}
-
-.brand-text h1 {
-  font-size: 1.15rem;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-
-.brand-sub {
-  font-size: 0.8rem;
-  color: var(--gdg-blue);
-  font-weight: 500;
-}
-
-.btn-insta {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  background: linear-gradient(135deg, rgba(225, 48, 108, 0.2), rgba(245, 96, 64, 0.2));
-  border: 1px solid rgba(225, 48, 108, 0.4);
-  border-radius: 20px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 0.85rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-insta:hover {
-  transform: translateY(-2px);
-  background: linear-gradient(135deg, rgba(225, 48, 108, 0.35), rgba(245, 96, 64, 0.35));
-}
-
-/* Hero */
-.hero {
-  max-width: 760px;
-  margin: 40px auto 30px;
-  padding: 0 20px;
-  text-align: center;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-badge {
-  display: inline-block;
-  padding: 6px 14px;
-  background: rgba(66, 133, 244, 0.12);
-  border: 1px solid rgba(66, 133, 244, 0.3);
-  color: var(--gdg-blue);
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-
-.hero-title {
-  font-size: 2.6rem;
-  font-weight: 800;
-  letter-spacing: -1px;
-  line-height: 1.15;
-  margin-bottom: 16px;
-  background: linear-gradient(135deg, #ffffff 40%, #c3d9ff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.hero-desc {
-  font-size: 1.05rem;
-  color: var(--text-sub);
-  line-height: 1.6;
-}
-
-/* Games Grid */
-.games-grid {
-  max-width: 1100px;
-  margin: 10px auto 60px;
-  padding: 0 20px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
-  gap: 24px;
-  position: relative;
-  z-index: 1;
-  width: 100%;
-}
-
-/* Game Card */
-.game-card {
-  background: var(--card-bg);
-  border: 1px solid var(--card-border);
-  border-radius: 24px;
-  padding: 30px;
-  backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.game-card:hover {
-  transform: translateY(-6px);
-  border-color: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-}
-
-.card-tag {
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 16px;
-}
-.tag-blue { color: var(--gdg-blue); }
-.tag-red { color: var(--gdg-red); }
-.tag-green { color: var(--gdg-green); }
-
-.card-icon {
-  font-size: 3rem;
-  margin-bottom: 12px;
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #fff;
-}
-
-.card-desc {
-  font-size: 0.95rem;
-  color: var(--text-sub);
-  line-height: 1.6;
-  margin-bottom: 24px;
-  flex: 1;
-}
-
 .card-badges {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 6px;
 }
 
 .badge {
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 5px 10px;
-  background: rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  color: var(--text-main);
+  font-size: 11.5px;
+  font-weight: 500;
+  padding: 4px 10px;
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 12px;
+  color: #3c4043;
 }
 
-.btn-play {
-  display: block;
-  text-align: center;
-  padding: 14px 20px;
-  border-radius: 14px;
-  color: #fff;
-  text-decoration: none;
-  font-size: 1rem;
+.play-arrow {
+  font-size: 14px;
   font-weight: 700;
-  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: transform 0.2s ease;
 }
 
-.btn-play-blue {
-  background: var(--gdg-blue);
-  box-shadow: 0 4px 18px rgba(66, 133, 244, 0.4);
-}
-.btn-play-blue:hover {
-  background: #3367d6;
-  box-shadow: 0 6px 24px rgba(66, 133, 244, 0.6);
+.game-card:hover .play-arrow {
+  transform: translateX(4px);
 }
 
-.btn-play-red {
-  background: var(--gdg-red);
-  box-shadow: 0 4px 18px rgba(234, 67, 53, 0.4);
-}
-.btn-play-red:hover {
-  background: #d33828;
-  box-shadow: 0 6px 24px rgba(234, 67, 53, 0.6);
+.arrow-blue { color: #1a73e8; }
+.arrow-red { color: #d93025; }
+.arrow-green { color: #188038; }
+
+/* Social Links List (Direct match to pill buttons on screenshot) */
+.socials-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #5f6368;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 
-.btn-play-green {
-  background: var(--gdg-green);
-  box-shadow: 0 4px 18px rgba(52, 168, 83, 0.4);
+.socials-list {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 30px;
 }
-.btn-play-green:hover {
-  background: #2d9249;
-  box-shadow: 0 6px 24px rgba(52, 168, 83, 0.6);
+
+.social-pill {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 14px 20px;
+  text-decoration: none;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid rgba(255, 255, 255, 0.85);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  font-size: 15px;
+  font-weight: 500;
+  color: #1f1f1f;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+}
+
+.social-pill:hover {
+  transform: translateY(-2px) scale(1.015);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+.social-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 /* Footer */
 .footer {
-  border-top: 1px solid var(--card-border);
-  padding: 30px 20px;
   text-align: center;
-  font-size: 0.9rem;
-  color: var(--text-sub);
-  position: relative;
-  z-index: 1;
-  margin-top: auto;
+  font-size: 12.5px;
+  color: #5f6368;
+  padding: 20px 0 10px;
 }
 
-.footer-content {
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.footer strong {
+  color: #202124;
 }
-
-.footer-links a {
-  color: var(--gdg-blue);
-  text-decoration: none;
-}
-.footer-links a:hover {
-  text-decoration: underline;
-}
-
-/* Responsive */
-@media (max-width: 600px) {
-  .hero-title {
-    font-size: 2rem;
-  }
-  .games-grid {
-    grid-template-columns: 1fr;
-    margin-bottom: 40px;
-  }
-}
-

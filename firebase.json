@@ -3,6 +3,7 @@
     "public": ".",
     "ignore": [
       "firebase.json",
+      ".firebaserc",
       "**/.*",
       "**/node_modules/**",
       "**/venv/**",
@@ -13,12 +14,8 @@
     ],
     "headers": [
       {
-        "source": "**/*.@(wasm|data)",
+        "source": "**/*",
         "headers": [
-          {
-            "key": "Content-Type",
-            "value": "application/wasm"
-          },
           {
             "key": "Access-Control-Allow-Origin",
             "value": "*"

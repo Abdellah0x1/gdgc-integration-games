@@ -200,17 +200,29 @@
     gl_FragColor = vec4(clamp(col, 0.0, 1.0), 1.0);
   }`;
 
+  const LIGHT_COLORS = [
+    [1, 1, 1],
+    [0.9607843137254902, 0.9607843137254902, 0.9607843137254902],
+    [0.10588235294117647, 0.41568627450980394, 0.6549019607843137],
+    [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
+    [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
+    [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
+    [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
+    [0.3411764705882353, 0.8235294117647058, 0.9568627450980393]
+  ];
+
+  const DARK_COLORS = [
+    [0.0745, 0.0745, 0.0784],
+    [0.1255, 0.1294, 0.1412],
+    [0.0588, 0.1568, 0.3216],
+    [0.1412, 0.2588, 0.4588],
+    [0.0588, 0.1568, 0.3216],
+    [0.1412, 0.2588, 0.4588],
+    [0.0745, 0.0745, 0.0784],
+    [0.1255, 0.1294, 0.1412]
+  ];
+
   const UNIFORMS = {
-    colors: [
-      [1, 1, 1],
-      [0.9607843137254902, 0.9607843137254902, 0.9607843137254902],
-      [0.10588235294117647, 0.41568627450980394, 0.6549019607843137],
-      [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
-      [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
-      [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
-      [0.3411764705882353, 0.8235294117647058, 0.9568627450980393],
-      [0.3411764705882353, 0.8235294117647058, 0.9568627450980393]
-    ],
     colorCount: 4,
     scale: 1.300,
     intensity: 0.380,
@@ -277,7 +289,10 @@
       cursor: gl.getUniformLocation(program, 'u_cursor')
     };
 
-    gl.uniform3fv(uni.colors, new Float32Array(UNIFORMS.colors.flat()));
+    const isInitiallyDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    let currentColors = (isInitiallyDark ? DARK_COLORS : LIGHT_COLORS).map(c => [...c]);
+
+    gl.uniform3fv(uni.colors, new Float32Array(currentColors.flat()));
     gl.uniform4f(uni.shape, UNIFORMS.scale, UNIFORMS.intensity, UNIFORMS.paramA, UNIFORMS.warp);
     gl.uniform4f(uni.surface, UNIFORMS.detail, UNIFORMS.contrast, UNIFORMS.brightness, UNIFORMS.saturation);
     gl.uniform4f(uni.finish, UNIFORMS.hue, UNIFORMS.vignette, UNIFORMS.blur, UNIFORMS.grain);
@@ -299,6 +314,22 @@
 
     function render(now) {
       resize();
+
+      // Smooth color transition on theme change
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const targetColors = isDark ? DARK_COLORS : LIGHT_COLORS;
+      let hasChanged = false;
+      for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 3; j++) {
+          const diff = targetColors[i][j] - currentColors[i][j];
+          if (Math.abs(diff) > 0.001) {
+            currentColors[i][j] += diff * 0.08;
+            hasChanged = true;
+          }
+        }
+      }
+      gl.uniform3fv(uni.colors, new Float32Array(currentColors.flat()));
+
       gl.uniform4f(uni.scene, canvas.width, canvas.height, ((now - start) / 1000) * UNIFORMS.timeScale, UNIFORMS.colorCount);
       gl.uniform4f(uni.space, UNIFORMS.offsetX, UNIFORMS.offsetY, 0, 0);
       gl.drawArrays(gl.TRIANGLES, 0, 3);

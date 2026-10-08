@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>GDG ENSAF — Drawing Cam</title>
   <link rel="stylesheet" href="style.css">
+  <script src="theme.js"></script>
   
   <!-- MediaPipe Hands & Camera Utils: Local vendor with CDN fallback -->
   <script src="vendor/mediapipe/camera_utils.js" onerror="this.onerror=null;this.src='https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js'"></script>
@@ -32,6 +33,12 @@
     <!-- Top Status Bar -->
     <header class="glass-bar top-bar">
       <div class="brand">
+        <a href="../" class="glass-btn icon-btn nav-back-btn" title="Back to Games Hub" aria-label="Games Hub">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
         <img src="logo.png" alt="GDG ENSAF Logo" class="gdg-header-logo">
         <div class="brand-text">
           <span class="brand-title">GDG ENSAF</span>
@@ -39,6 +46,9 @@
         </div>
       </div>
       <div class="top-controls">
+        <button id="btnThemeToggle" class="glass-btn icon-btn theme-toggle-btn" data-theme-toggle title="Toggle Google Theme" aria-label="Toggle Google Theme">
+          <span class="theme-toggle-inner"></span>
+        </button>
         <button id="btnFlipCam" class="glass-btn icon-btn" title="Switch Front/Rear Camera" aria-label="Switch Camera">
           <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M20 10c0-4.418-3.582-8-8-8s-8 3.582-8 8c0 2.21.896 4.21 2.344 5.656L4 18h6v-6l-2.05 2.05C6.758 12.858 6 11.516 6 10c0-3.314 2.686-6 6-6s6 2.686 6 6c0 1.516-.758 2.858-1.95 4.05L14 12v6h6l-2.344-2.344C19.104 14.21 20 12.21 20 10z"/>

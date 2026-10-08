@@ -1,17 +1,115 @@
 /* GDG on Campus ENSAF — Games Hub
+   Google Developer Groups Theme (Light & Dark)
    Styled to match the official GDGC-WEBSITE (gdgensaf.web.app)
 */
 
 @import url('https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap');
 
-:root {
-  --gdg-blue: #4285F4;
-  --gdg-red: #EA4335;
-  --gdg-yellow: #FBBC04;
-  --gdg-green: #34A853;
-  --text-dark: #000000;
-  --text-blue: #1a73e8;
-  --text-sub: #5f6368;
+:root,
+html[data-theme="light"] {
+  --gdg-blue: #1a73e8;
+  --gdg-blue-light: #4285f4;
+  --gdg-red: #ea4335;
+  --gdg-yellow: #fbbc04;
+  --gdg-green: #34a853;
+
+  --bg-page: linear-gradient(180deg, #bfe4fa 0%, #e2f2fd 35%, #ffffff 100%);
+  --bg-body-color: #f8fafd;
+  --canvas-opacity: 1;
+
+  --card-bg: rgba(255, 255, 255, 0.82);
+  --card-border: rgba(255, 255, 255, 0.95);
+  --card-border-hover: rgba(255, 255, 255, 1);
+  --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --card-shadow-hover: 0 12px 30px rgba(66, 133, 244, 0.16), 0 4px 10px rgba(0, 0, 0, 0.04);
+
+  --text-title: #000000;
+  --text-subtitle: #1a73e8;
+  --text-desc: #5f6368;
+  --text-strong: #202124;
+  --text-card-title: #1f1f1f;
+  --text-card-desc: #5f6368;
+  --text-body: #202124;
+
+  --badge-bg: rgba(26, 115, 232, 0.12);
+  --badge-border: rgba(26, 115, 232, 0.3);
+  --badge-text: #1a73e8;
+
+  --pill-badge-bg: rgba(0, 0, 0, 0.05);
+  --pill-badge-text: #3c4043;
+
+  --social-bg: rgba(255, 255, 255, 0.76);
+  --social-border: rgba(255, 255, 255, 0.85);
+  --social-bg-hover: rgba(255, 255, 255, 0.95);
+  --social-text: #1f1f1f;
+  --social-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  --social-shadow-hover: 0 8px 20px rgba(0, 0, 0, 0.08);
+
+  --nav-pill-bg: rgba(255, 255, 255, 0.82);
+  --nav-pill-border: rgba(255, 255, 255, 0.95);
+  --nav-pill-text: #3c4043;
+
+  --toggle-bg: rgba(255, 255, 255, 0.9);
+  --toggle-border: rgba(0, 0, 0, 0.08);
+  --toggle-color: #202124;
+  --toggle-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+
+  --sub-blue: #1a73e8;
+  --sub-red: #d93025;
+  --sub-green: #188038;
+}
+
+html[data-theme="dark"] {
+  --gdg-blue: #8ab4f8;
+  --gdg-blue-light: #aecbfa;
+  --gdg-red: #f28b82;
+  --gdg-yellow: #fdd663;
+  --gdg-green: #81c995;
+
+  --bg-page: linear-gradient(180deg, #0e1520 0%, #131314 40%, #131314 100%);
+  --bg-body-color: #131314;
+  --canvas-opacity: 0.75;
+
+  --card-bg: rgba(32, 33, 36, 0.85);
+  --card-border: rgba(255, 255, 255, 0.12);
+  --card-border-hover: rgba(138, 180, 248, 0.4);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --card-shadow-hover: 0 14px 36px rgba(138, 180, 248, 0.22), 0 4px 12px rgba(0, 0, 0, 0.5);
+
+  --text-title: #f8f9fa;
+  --text-subtitle: #8ab4f8;
+  --text-desc: #bdc1c6;
+  --text-strong: #ffffff;
+  --text-card-title: #f1f3f4;
+  --text-card-desc: #9aa0a6;
+  --text-body: #e8eaed;
+
+  --badge-bg: rgba(138, 180, 248, 0.15);
+  --badge-border: rgba(138, 180, 248, 0.32);
+  --badge-text: #8ab4f8;
+
+  --pill-badge-bg: rgba(255, 255, 255, 0.08);
+  --pill-badge-text: #bdc1c6;
+
+  --social-bg: rgba(32, 33, 36, 0.85);
+  --social-border: rgba(255, 255, 255, 0.12);
+  --social-bg-hover: rgba(45, 47, 51, 0.95);
+  --social-text: #f1f3f4;
+  --social-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  --social-shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.45);
+
+  --nav-pill-bg: rgba(32, 33, 36, 0.85);
+  --nav-pill-border: rgba(255, 255, 255, 0.12);
+  --nav-pill-text: #e8eaed;
+
+  --toggle-bg: rgba(40, 42, 46, 0.9);
+  --toggle-border: rgba(255, 255, 255, 0.15);
+  --toggle-color: #fdd663;
+  --toggle-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+
+  --sub-blue: #8ab4f8;
+  --sub-red: #f28b82;
+  --sub-green: #81c995;
 }
 
 * {
@@ -23,14 +121,16 @@
 
 body {
   min-height: 100vh;
-  background: linear-gradient(180deg, #bfe4fa 0%, #e2f2fd 35%, #ffffff 100%);
+  background-color: var(--bg-body-color);
+  background-image: var(--bg-page);
   font-family: 'Google Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: #202124;
+  color: var(--text-body);
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* Background WebGL Shader Canvas */
@@ -42,13 +142,15 @@ body {
   pointer-events: none;
   z-index: 0;
   display: block;
+  opacity: var(--canvas-opacity);
+  transition: opacity 0.4s ease;
 }
 
 /* Container */
 .page-container {
   width: 100%;
   max-width: 520px;
-  padding: 40px 18px 60px;
+  padding: 24px 18px 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -56,7 +158,78 @@ body {
   z-index: 10;
 }
 
-/* Profile Header (Exact match to gdgensaf.web.app) */
+/* Top Action Bar with Google Theme Switcher */
+.top-nav-bar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.campus-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--nav-pill-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--nav-pill-border);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--nav-pill-text);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.campus-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.dot-blue { background-color: var(--gdg-blue); }
+.dot-red { background-color: var(--gdg-red); }
+.dot-yellow { background-color: var(--gdg-yellow); }
+.dot-green { background-color: var(--gdg-green); }
+
+/* Theme Toggle Button */
+.theme-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1.5px solid var(--toggle-border);
+  color: var(--toggle-color);
+  box-shadow: var(--toggle-shadow);
+  cursor: pointer;
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.25s ease,
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.08) rotate(10deg);
+}
+
+.theme-toggle-btn:active {
+  transform: scale(0.92);
+}
+
+.theme-icon {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.3s ease;
+}
+
+/* Profile Header (Cloned from gdgensaf.web.app) */
 .profile-header {
   text-align: center;
   margin-bottom: 28px;
@@ -83,28 +256,31 @@ body {
 .title {
   font-size: 25px;
   font-weight: 700;
-  color: #000000;
+  color: var(--text-title);
   letter-spacing: -0.3px;
   margin-bottom: 4px;
+  transition: color 0.3s ease;
 }
 
 .subtitle {
   font-size: 16.5px;
   font-weight: 500;
-  color: #1a73e8;
+  color: var(--text-subtitle);
   margin-bottom: 10px;
+  transition: color 0.3s ease;
 }
 
 .description {
   font-size: 13.5px;
-  color: #5f6368;
+  color: var(--text-desc);
   line-height: 1.5;
   max-width: 360px;
   margin: 0 auto;
+  transition: color 0.3s ease;
 }
 
 .description strong {
-  color: #202124;
+  color: var(--text-strong);
 }
 
 /* Games Section Header */
@@ -112,9 +288,9 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(26, 115, 232, 0.12);
-  border: 1px solid rgba(26, 115, 232, 0.3);
-  color: #1a73e8;
+  background: var(--badge-bg);
+  border: 1px solid var(--badge-border);
+  color: var(--badge-text);
   font-size: 12px;
   font-weight: 600;
   padding: 5px 14px;
@@ -122,6 +298,7 @@ body {
   margin: 18px auto 20px;
   letter-spacing: 0.3px;
   text-transform: uppercase;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
 }
 
 /* Games Cards List (Cards styled matching gdgensaf.web.app pill cards) */
@@ -139,24 +316,24 @@ body {
   flex-direction: column;
   text-decoration: none;
   border-radius: 22px;
-  background: rgba(255, 255, 255, 0.82);
+  background: var(--card-bg);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1.5px solid rgba(255, 255, 255, 0.95);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.02);
+  border: 1.5px solid var(--card-border);
+  box-shadow: var(--card-shadow);
   padding: 20px 22px;
   overflow: hidden;
   transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
               box-shadow 0.3s ease,
-              border-color 0.3s ease;
+              border-color 0.3s ease,
+              background 0.3s ease;
   cursor: pointer;
 }
 
 .game-card:hover {
   transform: translateY(-4px) scale(1.015);
-  border-color: rgba(255, 255, 255, 1);
-  box-shadow: 0 12px 30px rgba(66, 133, 244, 0.16),
-              0 4px 10px rgba(0, 0, 0, 0.04);
+  border-color: var(--card-border-hover);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .game-card:active {
@@ -186,9 +363,9 @@ body {
   transform: scale(1.15) rotate(4deg);
 }
 
-.icon-blue { background: rgba(66, 133, 244, 0.12); }
-.icon-red { background: rgba(234, 67, 53, 0.12); }
-.icon-green { background: rgba(52, 168, 83, 0.12); }
+.icon-blue { background: rgba(66, 133, 244, 0.15); }
+.icon-red { background: rgba(234, 67, 53, 0.15); }
+.icon-green { background: rgba(52, 168, 83, 0.15); }
 
 .card-header-text {
   flex: 1;
@@ -197,9 +374,10 @@ body {
 .card-title {
   font-size: 17.5px;
   font-weight: 700;
-  color: #1f1f1f;
+  color: var(--text-card-title);
   letter-spacing: -0.2px;
   margin-bottom: 2px;
+  transition: color 0.3s ease;
 }
 
 .card-subtitle {
@@ -209,15 +387,16 @@ body {
   letter-spacing: 0.5px;
 }
 
-.sub-blue { color: #1a73e8; }
-.sub-red { color: #d93025; }
-.sub-green { color: #188038; }
+.sub-blue { color: var(--sub-blue); }
+.sub-red { color: var(--sub-red); }
+.sub-green { color: var(--sub-green); }
 
 .card-desc {
   font-size: 13.5px;
-  color: #5f6368;
+  color: var(--text-card-desc);
   line-height: 1.45;
   margin-bottom: 14px;
+  transition: color 0.3s ease;
 }
 
 .card-footer {
@@ -236,9 +415,10 @@ body {
   font-size: 11.5px;
   font-weight: 500;
   padding: 4px 10px;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--pill-badge-bg);
   border-radius: 12px;
-  color: #3c4043;
+  color: var(--pill-badge-text);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .play-arrow {
@@ -254,19 +434,20 @@ body {
   transform: translateX(4px);
 }
 
-.arrow-blue { color: #1a73e8; }
-.arrow-red { color: #d93025; }
-.arrow-green { color: #188038; }
+.arrow-blue { color: var(--sub-blue); }
+.arrow-red { color: var(--sub-red); }
+.arrow-green { color: var(--sub-green); }
 
-/* Social Links List (Direct match to pill buttons on screenshot) */
+/* Social Links List */
 .socials-title {
   font-size: 13px;
   font-weight: 600;
-  color: #5f6368;
+  color: var(--text-desc);
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
   text-align: center;
+  transition: color 0.3s ease;
 }
 
 .socials-list {
@@ -285,21 +466,25 @@ body {
   padding: 14px 20px;
   text-decoration: none;
   border-radius: 18px;
-  background: rgba(255, 255, 255, 0.76);
+  background: var(--social-bg);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
-  border: 1.5px solid rgba(255, 255, 255, 0.85);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+  border: 1.5px solid var(--social-border);
+  box-shadow: var(--social-shadow);
   font-size: 15px;
   font-weight: 500;
-  color: #1f1f1f;
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.25s ease;
+  color: var(--social-text);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.25s ease,
+              background 0.25s ease,
+              color 0.25s ease,
+              border-color 0.25s ease;
 }
 
 .social-pill:hover {
   transform: translateY(-2px) scale(1.015);
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  background: var(--social-bg-hover);
+  box-shadow: var(--social-shadow-hover);
 }
 
 .social-icon {
@@ -315,10 +500,11 @@ body {
 .footer {
   text-align: center;
   font-size: 12.5px;
-  color: #5f6368;
+  color: var(--text-desc);
   padding: 20px 0 10px;
+  transition: color 0.3s ease;
 }
 
 .footer strong {
-  color: #202124;
+  color: var(--text-strong);
 }

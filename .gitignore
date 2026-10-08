@@ -33,3 +33,7 @@ yarn-error.log*
 Thumbs.db
 .vscode/
 .idea/
+
+
+# Firebase cache
+.firebase/

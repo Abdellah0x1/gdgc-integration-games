@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GDG on Campus ENSAF — Integration Games Hub</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="bg-glow glow-blue"></div>
+  <div class="bg-glow glow-red"></div>
+  <div class="bg-glow glow-yellow"></div>
+  <div class="bg-glow glow-green"></div>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="logo.png" alt="GDG ENSAF Logo" class="brand-logo" onerror="this.style.display='none'">
+        <div class="brand-text">
+          <h1>Google Developer Groups</h1>
+          <span class="brand-sub">On Campus • ENSA Fès</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="https://www.instagram.com/gdg.ensaf/" target="_blank" rel="noopener" class="btn-insta">
+          <span>📷 @gdg.ensaf</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-badge">⚡ Integration Day & Tech Booths 2026</div>
+    <h1 class="hero-title">Interactive AI & Vision Games</h1>
+    <p class="hero-desc">
+      Explore computer vision, hand tracking, and 3D algorithms right inside your mobile browser. Tap any game below to start playing instantly!
+    </p>
+  </section>
+
+  <!-- Games Cards Grid -->
+  <main class="games-grid">
+
+    <!-- GAME 1: Puzzle Cam -->
+    <article class="game-card card-puzzle">
+      <div class="card-tag tag-blue">Computer Vision • MediaPipe</div>
+      <div class="card-icon">🧩</div>
+      <h2 class="card-title">Puzzle Cam</h2>
+      <p class="card-desc">
+        Form a frame with your hands or close both eyes to trigger the 3-second camera snapshot. Then pinch and drag the 3x3 puzzle chunks across the screen to assemble your photo with the official GDG ENSAF watermark!
+      </p>
+      <div class="card-badges">
+        <span class="badge">👁️ Blink Snap</span>
+        <span class="badge">👌 Pinch & Drag</span>
+        <span class="badge">📸 Save Image</span>
+      </div>
+      <a href="./puzzle_cam/index.html" class="btn-play btn-play-blue">Play Puzzle Cam →</a>
+    </article>
+
+    <!-- GAME 2: AR Finger Drawing -->
+    <article class="game-card card-drawing">
+      <div class="card-tag tag-red">AI Gestures • AR Canvas</div>
+      <div class="card-icon">🎨</div>
+      <h2 class="card-title">AR Finger Drawing</h2>
+      <p class="card-desc">
+        Select from the 4 official Google developer colors (Red, Blue, Yellow, Green) and air-draw with your index finger in real time. Outline the GDG ENSAF logo stencil, snap your artwork, and share directly to Instagram Stories!
+      </p>
+      <div class="card-badges">
+        <span class="badge">☝️ Air Finger Draw</span>
+        <span class="badge">🎨 Google 4 Colors</span>
+        <span class="badge">📲 Instagram Share</span>
+      </div>
+      <a href="./drawing_cam/index.html" class="btn-play btn-play-red">Launch Drawing Cam →</a>
+    </article>
+
+    <!-- GAME 3: 3D Rubik's Cube Solver -->
+    <article class="game-card card-rubiks">
+      <div class="card-tag tag-green">3D Algorithms • Kociemba</div>
+      <div class="card-icon">🎲</div>
+      <h2 class="card-title">Rubik's Cube Solver 3D</h2>
+      <p class="card-desc">
+        Scan each face of your Rubik's cube using your smartphone camera or customize colors on the interactive 2D net. Watch Herbert Kociemba's two-phase algorithm solve it in milliseconds with animated 3D turning cues!
+      </p>
+      <div class="card-badges">
+        <span class="badge">📷 Camera Scanner</span>
+        <span class="badge">🎛️ 2D Net Palette</span>
+        <span class="badge">🔄 3D Animated Guide</span>
+      </div>
+      <a href="./rubiks_solver/index.html" class="btn-play btn-play-green">Open 3D Solver →</a>
+    </article>
+
+  </main>
+
+  <!-- Event Info & Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <p>Built with ❤️ by <strong>Google Developer Groups on Campus ENSAF</strong></p>
+      <p class="footer-links">
+        <a href="https://www.instagram.com/gdg.ensaf/" target="_blank">Instagram</a> • 
+        <a href="https://github.com/gdgoc-ensaf/integration-games" target="_blank">GitHub Repository</a>
+      </p>
+    </div>
+  </footer>
+</body>
+</html>

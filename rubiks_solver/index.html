@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>GDG ENSAF — 3D Rubik's Cube Solver</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header Bar -->
+  <header class="navbar">
+    <div class="brand">
+      <img src="logo.png" alt="GDG ENSAF Logo" class="brand-logo" onerror="this.style.display='none'">
+      <div class="brand-text">
+        <h1>GDG ENSAF</h1>
+        <span class="brand-sub">Rubik's Cube Solver 3D</span>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <a href="../" class="btn-nav">← Games Hub</a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Tab Navigation -->
+    <nav class="tabs-bar">
+      <button class="tab-btn active" data-tab="tab-net">
+        <span class="tab-icon">🎛️</span> 2D Net & Palette
+      </button>
+      <button class="tab-btn" data-tab="tab-camera">
+        <span class="tab-icon">📷</span> Camera Scanner
+      </button>
+      <button class="tab-btn" data-tab="tab-solution" id="tab-solution-btn">
+        <span class="tab-icon">✨</span> 3D Solution Steps
+      </button>
+    </nav>
+
+    <!-- TAB 1: 2D Unfolded Net & Manual Palette -->
+    <section id="tab-net" class="tab-content active">
+      <div class="card net-card">
+        <div class="card-header">
+          <h2>Interactive 2D Cube Net</h2>
+          <p class="card-desc">Tap any sticker to set its color using the palette below. Or generate a random scramble to test!</p>
+        </div>
+
+        <!-- Color Palette -->
+        <div class="palette-container">
+          <span class="palette-label">Select Color:</span>
+          <div class="palette-colors">
+            <button class="palette-chip active" data-color="W" style="--chip-color: #ffffff; --chip-border: #999;">
+              <span class="chip-dot"></span> White (<span class="chip-count" id="count-W">9</span>)
+            </button>
+            <button class="palette-chip" data-color="Y" style="--chip-color: #fbbc04;">
+              <span class="chip-dot"></span> Yellow (<span class="chip-count" id="count-Y">9</span>)
+            </button>
+            <button class="palette-chip" data-color="G" style="--chip-color: #34a853;">
+              <span class="chip-dot"></span> Green (<span class="chip-count" id="count-G">9</span>)
+            </button>
+            <button class="palette-chip" data-color="B" style="--chip-color: #4285f4;">
+              <span class="chip-dot"></span> Blue (<span class="chip-count" id="count-B">9</span>)
+            </button>
+            <button class="palette-chip" data-color="R" style="--chip-color: #ea4335;">
+              <span class="chip-dot"></span> Red (<span class="chip-count" id="count-R">9</span>)
+            </button>
+            <button class="palette-chip" data-color="O" style="--chip-color: #ff6d00;">
+              <span class="chip-dot"></span> Orange (<span class="chip-count" id="count-O">9</span>)
+            </button>
+          </div>
+        </div>
+
+        <!-- Unfolded Cube Net -->
+        <div class="cube-net-wrapper">
+          <div class="cube-net-grid">
+            <!-- Row 1: UP (U) -->
+            <div class="net-row row-top">
+              <div class="face-spacer"></div>
+              <div class="face-box face-u" data-face="U">
+                <span class="face-title">U (Up / White)</span>
+                <div class="face-grid" id="grid-U"></div>
+              </div>
+              <div class="face-spacer"></div>
+              <div class="face-spacer"></div>
+            </div>
+
+            <!-- Row 2: LEFT (L), FRONT (F), RIGHT (R), BACK (B) -->
+            <div class="net-row row-middle">
+              <div class="face-box face-l" data-face="L">
+                <span class="face-title">L (Left / Orange)</span>
+                <div class="face-grid" id="grid-L"></div>
+              </div>
+              <div class="face-box face-f" data-face="F">
+                <span class="face-title">F (Front / Green)</span>
+                <div class="face-grid" id="grid-F"></div>
+              </div>
+              <div class="face-box face-r" data-face="R">
+                <span class="face-title">R (Right / Red)</span>
+                <div class="face-grid" id="grid-R"></div>
+              </div>
+              <div class="face-box face-b" data-face="B">
+                <span class="face-title">B (Back / Blue)</span>
+                <div class="face-grid" id="grid-B"></div>
+              </div>
+            </div>
+
+            <!-- Row 3: DOWN (D) -->
+            <div class="net-row row-bottom">
+              <div class="face-spacer"></div>
+              <div class="face-box face-d" data-face="D">
+                <span class="face-title">D (Down / Yellow)</span>
+                <div class="face-grid" id="grid-D"></div>
+              </div>
+              <div class="face-spacer"></div>
+              <div class="face-spacer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Net Action Buttons -->
+        <div class="net-actions">
+          <button id="btn-reset-cube" class="btn btn-secondary">🔄 Reset Solved</button>
+          <button id="btn-scramble-cube" class="btn btn-warning">🎲 Random Scramble</button>
+          <button id="btn-solve-now" class="btn btn-primary btn-glow">⚡ Solve Cube</button>
+        </div>
+        <div id="status-validation" class="status-msg"></div>
+      </div>
+    </section>
+
+    <!-- TAB 2: Camera Scanner -->
+    <section id="tab-camera" class="tab-content">
+      <div class="card camera-card">
+        <div class="card-header">
+          <h2>Mobile Camera Face Scanner</h2>
+          <p class="card-desc">Scan the 6 faces in order. Align the 3x3 grid with your cube face, then tap "Scan Face".</p>
+        </div>
+
+        <!-- Face Guide Step -->
+        <div class="scan-guide">
+          <div class="guide-badge">
+            Step <span id="scan-step-idx">1</span> of 6: 
+            <strong id="scan-step-name">Front (Green) Face</strong>
+          </div>
+          <p class="guide-hint" id="scan-step-hint">Hold the cube with Green facing the camera and White on top.</p>
+        </div>
+
+        <!-- Camera Viewport -->
+        <div class="camera-viewport">
+          <video id="camera-video" playsinline autoplay muted></video>
+          <canvas id="camera-canvas" style="display:none;"></canvas>
+
+          <!-- 3x3 Alignment Reticle -->
+          <div class="scan-reticle">
+            <div class="reticle-grid">
+              <div class="reticle-cell" id="ret-0"></div>
+              <div class="reticle-cell" id="ret-1"></div>
+              <div class="reticle-cell" id="ret-2"></div>
+              <div class="reticle-cell" id="ret-3"></div>
+              <div class="reticle-cell reticle-center" id="ret-4"></div>
+              <div class="reticle-cell" id="ret-5"></div>
+              <div class="reticle-cell" id="ret-6"></div>
+              <div class="reticle-cell" id="ret-7"></div>
+              <div class="reticle-cell" id="ret-8"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Camera Controls -->
+        <div class="camera-controls">
+          <button id="btn-toggle-cam" class="btn btn-secondary">📷 Start Camera</button>
+          <button id="btn-capture-face" class="btn btn-primary" disabled>📸 Capture Face</button>
+          <button id="btn-next-face" class="btn btn-outline" style="display:none;">Next Face →</button>
+        </div>
+
+        <!-- 6 Faces Thumbnails Progress -->
+        <div class="scanned-faces-row">
+          <div class="scanned-thumb" id="thumb-U"><span>U (White)</span><div class="mini-grid"></div></div>
+          <div class="scanned-thumb" id="thumb-L"><span>L (Orange)</span><div class="mini-grid"></div></div>
+          <div class="scanned-thumb active" id="thumb-F"><span>F (Green)</span><div class="mini-grid"></div></div>
+          <div class="scanned-thumb" id="thumb-R"><span>R (Red)</span><div class="mini-grid"></div></div>
+          <div class="scanned-thumb" id="thumb-B"><span>B (Blue)</span><div class="mini-grid"></div></div>
+          <div class="scanned-thumb" id="thumb-D"><span>D (Yellow)</span><div class="mini-grid"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: 3D Solution Steps -->
+    <section id="tab-solution" class="tab-content">
+      <div class="card solution-card">
+        <div class="card-header">
+          <h2>Step-by-Step 3D Solution</h2>
+          <p class="card-desc" id="solution-summary">Solve the cube to reveal step-by-step 3D turning instructions.</p>
+        </div>
+
+        <!-- 3D Cube Canvas -->
+        <div class="scene-3d-wrapper">
+          <div class="cube-3d-stage">
+            <div class="cube-3d" id="cube-3d-root">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Move Instruction Card -->
+        <div class="move-card">
+          <div class="move-badge-container">
+            <span class="move-badge" id="current-move-badge">—</span>
+            <div class="move-details">
+              <div class="move-name" id="current-move-name">Ready to solve</div>
+              <div class="move-desc" id="current-move-desc">Click "Solve Cube" to begin</div>
+            </div>
+          </div>
+
+          <!-- Progress -->
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-fill" id="solution-progress" style="width: 0%;"></div>
+          </div>
+          <div class="progress-label">
+            Step <span id="current-step-num">0</span> of <span id="total-step-num">0</span> moves
+          </div>
+
+          <!-- Playback Controls -->
+          <div class="playback-controls">
+            <button id="btn-prev-move" class="btn btn-outline" disabled>⏮ Previous</button>
+            <button id="btn-play-pause" class="btn btn-primary" disabled>▶ Auto Play</button>
+            <button id="btn-next-move" class="btn btn-primary" disabled>Next ⏭</button>
+            <button id="btn-reset-playback" class="btn btn-secondary">🔄 Reset</button>
+          </div>
+
+          <!-- Move Sequence Ribbon -->
+          <div class="moves-ribbon-container">
+            <div class="moves-ribbon" id="moves-ribbon"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>Built with ❤️ by <strong>Google Developer Groups on Campus ENSAF</strong></p>
+  </footer>
+
+  <!-- min2phase Kociemba Solver (Runs 100% Client-Side) -->
+  <script src="min2phase.js"></script>
+  <!-- Application JS -->
+  <script src="app.js"></script>
+</body>
+</html>
